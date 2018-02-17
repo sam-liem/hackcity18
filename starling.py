@@ -56,7 +56,7 @@ class account:
         
         return {"speech":speech,"action":"returnSortCode"}
 
-    def returnTransactions(self):
+    def returnAllTransactions(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/transactions")
 
         transactions = data['_embedded']['transactions']
@@ -175,7 +175,3 @@ class account:
                 
         self.post_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled",data)
         print(self.returnPaymentSchedules())
-       
-
-
-acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
