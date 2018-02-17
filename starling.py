@@ -62,16 +62,16 @@ class account:
         
         return {"speech":speech,"action":"returnSortCode"}
 
-
-    def getPaymentSchedules(self):
-        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled")
-        #paymentOrders = data ['paymentOrders']
-
-        print(data)
-
-    def getTransactions(self):
+    # TRANSACTIONS
+    def getAllTransactions(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/transactions")
-        transactions = data['_embedded']['transactions']
+        return data['_embedded']['transactions']
+
+    def returnAllTransactions(self):
+        return self.returnTransactions(self.getAllTransactions)
+
+    def returnTransactions(self, data):
+        transactions = data
 
         speech = ""
         for transaction in transactions:
@@ -83,21 +83,24 @@ class account:
 
         return {"speech":speech, "action":"returnTransactions"}
 
-    def getPaymentSchedules(self):
+    # PAYMENT SCHEDULES
+    def getAllPaymentSchedules(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled")
         paymentOrders = data ['_embedded'] ['paymentOrders']
+        return paymentOrders
+
+    def returnAllPaymentSchedules(self):
+        return self.returnPaymentSchedules(self.getAllPaymentSchedules())
+
+    def returnPaymentSchedules(self, data):
+        paymentOrders = data
 
         speech = ""
         for payment in paymentOrders:
             msg =  "This payment is for "+payment['reference'] + " for" + payment['recipientName'] + "of amount " + payment['amount']+"\n"
             speech += msg
 
-
         return speech
-                       
-    
-    def processTransactions(self):
-        pass
         
     # SAVING GOALS 
     def getSavingGoals(self):
@@ -118,7 +121,3 @@ class account:
                    "savedPercentage": 50
                  }
         self.put_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals/e43d3060-2c83-4bb9-ac8c-c627b9c45f8b", data)
-        # print(self.getSavingGoals())
-
-acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
-
