@@ -11,6 +11,7 @@ class account:
     # REQUEST functions
     def get_req(self, url):
         r = requests.get(url, headers=self.headers)
+        print(r.text)
         if (r.status_code != 200):
             return {}
         else:
@@ -18,7 +19,7 @@ class account:
 
     def put_req(self, url, d):
         r = requests.put(url, headers=self.headers, data=json.dumps(d))
-        print(r.content)
+        print(r.text)
         if (r.status_code != 200):
             return {}
         else:
@@ -71,8 +72,11 @@ class account:
         return {"speech":speech, "action":"returnTransactions"}
 
     # SAVING GOALS 
-    def returnSavingGoals(self):
-        savingGoals = self.getSavingGoals()
+    def returnAllSavingGoals(self):
+        return self.returnSavingGoals(self.getAllSavingGoals())
+
+    def returnSavingGoals(self, data):
+        savingGoals = data
         if savingGoals == {}:
             return {}
 
@@ -83,7 +87,7 @@ class account:
             targetAmount = int(savingGoal['target']['minorUnits'])
             savedAmount = int(savingGoal['totalSaved']['minorUnits'])
             percentageSaved = savedAmount / targetAmount
-            msg = "You've saved " + str(percentageSaved) + "percent of your " + savingGoal['name'] + " fund!"
+            msg = "You've saved " + str(percentageSaved) + " percent of your " + savingGoal['name'] + " fund!"
             if (percentageSaved >= 1):
                 msg = "You've reached your goal for " + savingGoal['name'] + "."
             elif (percentageSaved > 0.7):
@@ -94,7 +98,7 @@ class account:
 
         return {"speech":speech, "action":"returnSavingGoals"}
 
-    def getSavingGoals(self):
+    def getAllSavingGoals(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals")
         return data
 
@@ -114,12 +118,12 @@ class account:
                   },
                   "savedPercentage": 50
                 }
-        self.put_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals/e43d3060-2c83-4bb9-ac8c-c627b9c45f8b", data)
-        speech = "You added a new savings goal: "+data['name'] + " of " + str(data['target']['minorUnits'])
+        self.put_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals/b43d3060-2c83-4bb9-ac8c-c627b9c45f8b", data)
+        speech = "You added a new savings goal: "+data['name'] + " for " + str(data['target']['minorUnits'])
         return {"speech": speech, "action":"addSavingGoal"}
 
     def deleteSavingGoal(self, goalName):
-        savingGoals = self.getSavingGoals()
+        savingGoals = self.getAllSavingGoals()
         if savingGoals == {}:
             return {"speech": "You have no saving goals!", "action":"deleteSavingGoal"}
 
@@ -133,5 +137,20 @@ class account:
 
         return {}
 
+    def returnSavingGoal(self, goalName):
+        savingGoals = self.getAllSavingGoals()
+        if savingGoals == {}:
+            return {"speech": "You have no saving goals!", "action":"getSavingGoal"}
+
+        savingGoals = savingGoals['savingsGoalList']
+
+        for savingGoal in savingGoals:
+            if (savingGoal['name'] == goalName):
+                return self.returnSavingGoals({"savingsGoalList":[savingGoal]})
+
+        return {"speech": "Couldn't find that goal!", "action":"getSavingGoal"}
+
 acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
-# print(acc.returnSavingGoals())
+# print(acc.returnAllSavingGoals())
+# print(acc.returnAllSavingGoals())
+# print(acc.getSavingGoal("Trip to Paris"))

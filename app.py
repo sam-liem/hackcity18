@@ -60,10 +60,10 @@ def processRequest(req):
         data = acc.addSavingGoal(req)
 
     elif action == "getAllSavingGoals":
-        data = acc.returnSavingGoal(req)
+        data = acc.returnAllSavingGoal()
 
     elif action == "deleteSavingGoal":
-        data = acc.addSavingGoal(req)
+        data = acc.deleteSavingGoal(req)
 
     else:
         return {}
