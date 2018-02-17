@@ -39,17 +39,24 @@ def processRequest(req):
     acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
 
     action = req.get("result").get("action")
+    data = {}
 
     if action == "getBalance":
-        balanceData = acc.getBalance()
-        return makeWebhookResult(balanceData);
+        data = acc.returnBalance()
 
-    elif action == "getSavingsGoals":
-        # return getSavingsGoals(req)
-        return {}
+    elif action == "getSortCode":
+        data = acc.returnAccSort()
+
+    elif action == "getAccountNumber":
+        data = acc.returnAccNumber()
+
+    elif action == "getCurrency":
+        data = acc.returnAccCurr()
 
     else:
         return {}
+
+    return makeWebhookResult(data)
 
 def makeWebhookResult(data):
 
