@@ -39,4 +39,21 @@ class account:
     def returnAccNumber(self):
         accountData = self.getAccountData()
         speech = "Your account number is "+str(data['number'])+"."
+        
         return {"speech":speech,"action":"returnSortCode"}
+
+    def returnTransactions(self):
+        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/transactions")
+
+        transactions = data['transactions']
+
+        speech = ""
+        for transaction in transaction:
+            if transaction['direction'] == "OUTBOUND":
+                msg = "Outbound transaction. Amount going out: " + str(transaction['amount']*-1) + " balance remaining: " + str(transaction['balance']) + " Date : " + str(transaction['created']) + "\n"
+            else:
+                msg = "Inbound transaction. Amount going in: " + str(transaction['amount']) + " balance remaining: " + str(transaction['balance']) + " Date : " + str(transaction['created']) + "\n"
+            speech += msg
+
+        return {"speech":speech, "action":"returnTransactions"}
+
