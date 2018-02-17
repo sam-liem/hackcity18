@@ -54,8 +54,17 @@ def processRequest(req):
         data = acc.returnAccCurr()
 
     elif action == "getAllTransactions":
-        data = acc.returnTransactions()
-        
+        data = acc.returnAllTransactions()
+    
+    elif action == "addSavingsGoal":
+        data = acc.addSavingGoal(req)
+
+    elif action == "getAllSavingGoals":
+        data = acc.returnAllSavingGoal()
+
+    elif action == "deleteSavingGoal":
+        data = acc.deleteSavingGoal(req)
+
     else:
         return {}
 
