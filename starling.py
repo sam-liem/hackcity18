@@ -1,71 +1,41 @@
-import requests
 import json
+import httpHelper
 
 class account:
 
     def __init__ (self,token):
         self.loggin = False
         self.token = token
-        self.headers = {"Accept": "application/json","Content-Type": "application/json","Authorization": "Bearer "+token}
-
-    # REQUEST functions
-    def get_req(self, url):
-        r = requests.get(url, headers=self.headers)
-        print(r.text)
-        if (r.status_code != 200):
-            return {}
-        else:
-            return json.loads(r.text)
-
-    def put_req(self, url, d):
-        r = requests.put(url, headers=self.headers, data=json.dumps(d))
-        print(r.text)
-        if (r.status_code != 200):
-            return {}
-        else:
-            return json.loads(r.text)
-
-    def post_req (self, url, d):
-        r = reuests.post(url, headers=self.headers, data=json.dumps(d))
-        print(r.text)
-        if status_code != 200:
-            return []
-        else:
-            return json.loads(r.text)
-
-    def delete_req(self, url):
-        r = requests.delete(url, headers=self.headers)
-        return {}
 
     # BALANCE
     def returnBalance(self):
-        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/accounts/balance")
+        data = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/accounts/balance")
         speech = "You have "+str(data['effectiveBalance'])+" in your balance."
         return {"speech":speech,"action":"returnBalance"}
 
     # ACCOUNT 
-    def getAcc(self):
-        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/accounts")
+    def getAccountData(self):
+        data = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/accounts")
         return data
 
     def returnAccSort(self):
-        accountData = self.getAccountData()
+        data = self.getAccountData()
         speech = "Your sort code is "+str(data['sortCode'])+"."
         return {"speech":speech,"action":"returnSortCode"}
 
     def returnAccCurr(self):
-        accountData = self.getAccountData()
+        data = self.getAccountData()
         speech = "The currency of your account is "+str(data['currency'])+"."
         return {"speech":speech,"action":"returnSortCode"}
 
     def returnAccNumber(self):
-        accountData = self.getAccountData()
+        data = self.getAccountData()
         speech = "Your account number is "+str(data['number'])+"."
         return {"speech":speech,"action":"returnSortCode"}
 
     # TRANSACTIONS
     def getAllTransactions(self):
-        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/transactions")
+        data = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/transactions")
         return data['_embedded']['transactions']
 
     def returnAllTransactions(self):
@@ -86,7 +56,7 @@ class account:
 
     # PAYMENT SCHEDULES
     def getAllPaymentSchedules(self):
-        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled")
+        data = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/payments/scheduled")
         paymentOrders = data ['_embedded'] ['paymentOrders']
         return paymentOrders
 
@@ -119,7 +89,7 @@ class account:
             targetAmount = int(savingGoal['target']['minorUnits'])
             savedAmount = int(savingGoal['totalSaved']['minorUnits'])
             percentageSaved = savedAmount / targetAmount
-            msg = "You've saved " + str(percentageSaved) + " percent of your " + savingGoal['name'] + " fund!"
+            msg = "For the "+ savingGoal['name'] + " savings goal, you've saved " + str(percentageSaved) + " percent."
             if (percentageSaved >= 1):
                 msg = "You've reached your goal for " + savingGoal['name'] + "."
             elif (percentageSaved > 0.7):
@@ -131,7 +101,7 @@ class account:
         return {"speech":speech, "action":"returnSavingGoals"}
 
     def getAllSavingGoals(self):
-        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals")
+        data = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/savings-goals")
         return data
 
     def addSavingGoal(self, data):
@@ -150,7 +120,7 @@ class account:
                   },
                   "savedPercentage": 50
                 }
-        self.put_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals/b43d3060-2c83-4bb9-ac8c-c627b9c45f8b", data)
+        httpHelper.put_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/savings-goals/b43d3060-2c83-4bb9-ac8c-c627b9c45f8b", data)
         speech = "You added a new savings goal: "+data['name'] + " for " + str(data['target']['minorUnits'])
         return {"speech": speech, "action":"addSavingGoal"}
 
@@ -163,8 +133,9 @@ class account:
 
         for savingGoal in savingGoals:
             if (savingGoal['name'] == goalName):
-                sgId = savingGoal['photo']['href']
-                self.delete_req("https://api-sandbox.starlingbank.com/"+sgId)
+                sgId = savingGoal['_links']['photo']['href']
+                if httpHelper.delete_req(self.token, "https://api-sandbox.starlingbank.com/"+sgId) == {}:
+                    return {"speech": "Deleting " + goalName + " failed", "action":"deleteSavingGoal"}
                 return {"speech": "Deleted " + goalName, "action":"deleteSavingGoal"}
 
         return {}
