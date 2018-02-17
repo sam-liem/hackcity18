@@ -7,14 +7,21 @@ class account:
         self.token = token
         self.headers = {"Accept": "application/json","Content-Type": "application/json","Authorization": "Bearer "+token}
 
+    # REQUEST functions
     def get_req(self, url):
-        return json.loads(requests.get(url, headers=self.headers).text)
+        r = requests.get(url, headers=self.headers)
+        if (r.status_code != 200):
+            return {}
+        else:
+            return json.loads(r.text)
 
+    # BALANCE
     def returnBalance(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/accounts/balance")
         speech = "You have "+str(data['effectiveBalance'])+" in your balance."
         return {"speech":speech,"action":"returnBalance"}
 
+    # ACCOUNT information
     def getAcc(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/accounts")
         return data
@@ -33,5 +40,3 @@ class account:
         accountData = self.getAccountData()
         speech = "Your account number is "+str(data['number'])+"."
         return {"speech":speech,"action":"returnSortCode"}
-
-
