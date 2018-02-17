@@ -41,7 +41,7 @@ class account:
 
 
     def getTransactions(self):
-        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/transactions")
+        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/transactions/any")
 
         transactions = data['transactions']
 
@@ -57,6 +57,12 @@ class account:
 
         return {"speech":speech, "action":"returnTransactions"}
 
+
+    def getPaymentSchedules(self):
+        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled")
+        #paymentOrders = data ['paymentOrders']
+
+        print(data)
                                                          
 
     
