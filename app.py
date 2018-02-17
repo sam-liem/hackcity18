@@ -1,4 +1,4 @@
-import starling
+from starling import account
 
 from urllib.parse import urlparse, urlencode
 from urllib.request import urlopen, Request
@@ -36,11 +36,13 @@ def webhook():
 
 def processRequest(req):
 
+    acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
+
     action = req.get("result").get("action")
 
     if action == "getBalance":
-        # return getBalance(req)
-        return {}
+        balanceData = acc.getBalance()
+        return makeWebhookResult(balanceData);
 
     elif action == "getSavingsGoals":
         # return getSavingsGoals(req)
@@ -54,7 +56,7 @@ def makeWebhookResult(data):
     if data == {}:
         return {}
         
-    speech = data.speech
+    speech = data['speech']
 
     return {
         "speech": speech,
