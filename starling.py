@@ -56,7 +56,7 @@ class account:
         
         return {"speech":speech,"action":"returnSortCode"}
 
-    def returnTransactions(self):
+    def returnAllTransactions(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/transactions")
 
         transactions = data['_embedded']['transactions']
@@ -150,7 +150,7 @@ class account:
 
         return {"speech": "Couldn't find that goal!", "action":"getSavingGoal"}
 
-acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
-# print(acc.returnAllSavingGoals())
+# acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
+# print(acc.returnAllTransactions())
 # print(acc.returnAllSavingGoals())
 # print(acc.getSavingGoal("Trip to Paris"))
