@@ -1,11 +1,11 @@
 from starling import account
-
 from urllib.parse import urlparse, urlencode
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError
 
 import json
 import os
+
 
 from flask import Flask
 from flask import request
@@ -55,16 +55,7 @@ def processRequest(req):
 
     elif action == "getAllTransactions":
         data = acc.returnTransactions()
-    
-    elif action == "addSavingsGoal":
-        data = acc.addSavingGoal(req)
-
-    elif action == "getAllSavingGoals":
-        data = acc.returnAllSavingGoal()
-
-    elif action == "deleteSavingGoal":
-        data = acc.deleteSavingGoal(req)
-
+        
     else:
         return {}
 
