@@ -23,6 +23,18 @@ class account:
         else:
             return json.loads(r.text)
 
+    def post_req (self, url, d):
+        r = reuests.post(url, headers=self.headers, data=json.dumps(d))
+        print(r.text)
+        if status_code != 200:
+            return []
+        else:
+            return json.loads(r.text)
+              
+    def delete_req(self, url):
+        r = requests.delete(url, headers=self.headers)
+        return {}
+
     # BALANCE
     def returnBalance(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/accounts/balance")
@@ -72,7 +84,8 @@ class account:
 
     def getPaymentSchedules(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled")
-        paymentOrders = data ['paymentOrders']
+        paymentOrders = data ['_embedded'] ['paymentOrders']
+
         speech = ""
         for payment in paymentOrders:
             msg = " ".join ("This payment is for",payment['reference'],
@@ -87,27 +100,25 @@ class account:
     
 
     # SAVING GOALS 
-    # def getSavingGoals(self):
-    #     data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals")
-    #     return data
+    def getSavingGoals(self):
+        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals")
+        return data
 
-    # def addSavingGoal(self, data):
-    #     data = {
-    #               "name": "Trip to Paris",
-    #               "target": {
-    #                 "currency": "GBP",
-    #                 "minorUnits": 11223344
-    #               },
-    #               "totalSaved": {
-    #                 "currency": "GBP",
-    #                 "minorUnits": 11223344
-    #               },
-    #               "savedPercentage": 50
-    #             }
-    #     self.put_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals/e43d3060-2c83-4bb9-ac8c-c627b9c45f8b", data)
+    def addSavingGoal(self, data):
+        data = {
+               "name": "Trip to Paris",
+                   "target": {
+                     "currency": "GBP",
+                     "minorUnits": 11223344
+                   },
+                   "totalSaved": {
+                     "currency": "GBP",
+                     "minorUnits": 11223344
+                   },
+                   "savedPercentage": 50
+                 }
+        self.put_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals/e43d3060-2c83-4bb9-ac8c-c627b9c45f8b", data)
         # print(self.getSavingGoals())
 
 acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
-acc.addSavingGoal("hi")
 
->>>>>>> master
