@@ -1,7 +1,5 @@
 {
-  "name": "API.AI webhook demonstration",
-  "description": "API.AI webhook demonstration",
-  "repository": "https://github.com/api-ai/apiai-weather-webhook-sample",
-  "logo": "http://xvir.github.io/img/apiai.png",
-  "keywords": ["api.ai", "natural language"]
+  "name": "hackcity18 starling bot",
+  "description": "banking assistant",
+  "repository": "https://github.com/sam-liem/hackcity18"
 }
