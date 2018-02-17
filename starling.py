@@ -48,23 +48,16 @@ class account:
         speech = ""
         for transaction in transaction:
             if transaction['direction'] == "OUTBOUND":
-                msg = "Outbound transaction. Amount going out: " +
-                          str(transaction['amount']*-1)
-                          + " balance remaining: " + str(transaction['balance']
-                          + " Date : " + str(transaction['created']) + "\n"
+                msg = "Outbound transaction. Amount going out: " + str(transaction['amount']*-1) +" balance remaining: " + str(transaction['balance']) + " Date : " + str(transaction['created']) + "\n"
 
-                
-
-             else:
-                msg = "Inbound transaction. Amount going in: " +
-                          str(transaction['amount']) +
-                          " balance remaining: " + str(transaction['balance'])
-                          + " Date : " + str(transaction['created']) + "\n"
+            else:
+                msg = "Inbound transaction. Amount going in: " + str(transaction['amount']) + " balance remaining: " + str(transaction['balance']) + " Date : " + str(transaction['created']) + "\n"
 
             speech += msg
-                          
-          
+
         return {"speech":speech, "action":"returnTransactions"}
+
+                                                         
 
     
                           
