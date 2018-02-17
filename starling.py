@@ -64,7 +64,6 @@ class account:
             speech += msg
                           
           
-
         return {"speech":speech, "action":"returnTransactions"}
 
     
