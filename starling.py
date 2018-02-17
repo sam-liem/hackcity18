@@ -148,7 +148,7 @@ class account:
             if (savingGoal['name'] == goalName):
                 return self.returnSavingGoals({"savingsGoalList":[savingGoal]})
 
-        return {"speech": "Couldn't find that goal!", "action":"getSavingGoal"}
+        return {"speech": "Couldn't find that goal!", "action":"returnSavingGoal"}
 
     def returnPaymentSchedules(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled")
@@ -160,9 +160,9 @@ class account:
             speech += msg
         return {"speech":speech, "action":"returnPaymentSchedules"}
 
-
-    def addPaymentSchedules (self):
-
+    def addPaymentSchedule(self, data):
+        # handle data after dialogflow is setup
+        # TODO
         data =  {
                     "payment": {
                     "currency": "GBP",
@@ -174,4 +174,5 @@ class account:
                 }
                 
         self.post_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled",data)
-        print(self.returnPaymentSchedules())
+        speech = "You added a new payment schedule. "
+        return {"speech": speech, "action":"addPaymentSchedule"}
