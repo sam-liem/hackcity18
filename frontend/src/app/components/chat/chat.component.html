@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+<img class="logo" src='favicon.ico' align="left">
+<h2 class="title">StarlingBot.</h2>
+<mat-list id="chatlist">
+  <mat-list-item *ngFor="let message of conversation">
+    <h3 id="sender" style="font-size:21px; color:pink" matLine>{{message.from}}</h3>
+    <p style="color:white; font-size:17px" matLine><span>{{message.content}}</span></p>
+  </mat-list-item>
+</mat-list>
+
+<md-divider></md-divider>
+
+<form class="example-form">
+  <mat-form-field class="example-full-width">
+    <input matInput
+           #message
+           maxlength="256"
+           placeholder="Message"
+           (keyup.enter)="addMessageFromUser(message)">
+    <mat-icon style="color:pink" matSuffix (click)="addMessageFromUser(message)">send</mat-icon>
+  </mat-form-field>
+</form>
+
+<script> document.getElementById("sender").innerHTML = "test"; </script>
+</body>
+</html>

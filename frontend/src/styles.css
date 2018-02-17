@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+body {
+  background: linear-gradient(to bottom right, hsl(234, 100%, 5%), hsl(140, 39%, 70%)) no-repeat fixed;
+  background-size: cover;
+}
