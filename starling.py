@@ -70,6 +70,7 @@ class account:
         print(data)
 
     def getTransactions(self):
+        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/transactions")
         transactions = data['_embedded']['transactions']
 
         speech = ""
@@ -88,17 +89,16 @@ class account:
 
         speech = ""
         for payment in paymentOrders:
-            msg = " ".join ("This payment is for",payment['reference'],
-                            "for",payment['recipientName'],"of amount",
-                            payment['amount'],"\n")
+            msg =  "This payment is for "+payment['reference'] + " for" + payment['recipientName'] + "of amount " + payment['amount']+"\n"
             speech += msg
 
-            
 
         return speech
                        
     
-
+    def processTransactions(self):
+        pass
+        
     # SAVING GOALS 
     def getSavingGoals(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals")
