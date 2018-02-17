@@ -2,6 +2,7 @@ import requests
 import json
 
 class account:
+
     def __init__ (self,token):
         self.loggin = False
         self.token = token
@@ -22,6 +23,10 @@ class account:
             return {}
         else:
             return json.loads(r.text)
+
+    def delete_req(self, url):
+        r = requests.delete(url, headers=self.headers)
+        return {}
 
     # BALANCE
     def returnBalance(self):
@@ -66,26 +71,67 @@ class account:
         return {"speech":speech, "action":"returnTransactions"}
 
     # SAVING GOALS 
-    # def getSavingGoals(self):
-    #     data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals")
-    #     return data
+    def returnSavingGoals(self):
+        savingGoals = self.getSavingGoals()
+        if savingGoals == {}:
+            return {}
 
-    # def addSavingGoal(self, data):
-    #     data = {
-    #               "name": "Trip to Paris",
-    #               "target": {
-    #                 "currency": "GBP",
-    #                 "minorUnits": 11223344
-    #               },
-    #               "totalSaved": {
-    #                 "currency": "GBP",
-    #                 "minorUnits": 11223344
-    #               },
-    #               "savedPercentage": 50
-    #             }
-    #     self.put_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals/e43d3060-2c83-4bb9-ac8c-c627b9c45f8b", data)
-        # print(self.getSavingGoals())
+        savingGoals = savingGoals['savingsGoalList']
+
+        speech = ""
+        for savingGoal in savingGoals:
+            targetAmount = int(savingGoal['target']['minorUnits'])
+            savedAmount = int(savingGoal['totalSaved']['minorUnits'])
+            percentageSaved = savedAmount / targetAmount
+            msg = "You've saved " + str(percentageSaved) + "percent of your " + savingGoal['name'] + " fund!"
+            if (percentageSaved >= 1):
+                msg = "You've reached your goal for " + savingGoal['name'] + "."
+            elif (percentageSaved > 0.7):
+                msg += " Keep going, you're only "+str(targetAmount-savedAmount)+" away."
+            else: 
+                msg += " Get saving, you're "+str(targetAmount-savedAmount)+" away. "
+            speech += msg
+
+        return {"speech":speech, "action":"returnSavingGoals"}
+
+    def getSavingGoals(self):
+        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals")
+        return data
+
+    def addSavingGoal(self, data):
+        # handle data after dialogflow is setup
+        # TODO
+        data = {
+                  "name": "Trip to Paris",
+                  "currency": "GBP",
+                  "target": {
+                    "currency": "GBP",
+                    "minorUnits": 11223344
+                  },
+                  "totalSaved": {
+                    "currency": "GBP",
+                    "minorUnits": 2
+                  },
+                  "savedPercentage": 50
+                }
+        self.put_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals/e43d3060-2c83-4bb9-ac8c-c627b9c45f8b", data)
+        speech = "You added a new savings goal: "+data['name'] + " of " + str(data['target']['minorUnits'])
+        return {"speech": speech, "action":"addSavingGoal"}
+
+    def deleteSavingGoal(self, goalName):
+        savingGoals = self.getSavingGoals()
+        if savingGoals == {}:
+            return {"speech": "You have no saving goals!", "action":"deleteSavingGoal"}
+
+        savingGoals = savingGoals['savingsGoalList']
+
+        for savingGoal in savingGoals:
+            if (savingGoal['name'] == goalName):
+                sgId = savingGoal['photo']['href']
+                self.delete_req("https://api-sandbox.starlingbank.com/"+sgId)
+                return {"speech": "Deleted " + goalName, "action":"deleteSavingGoal"}
+
+        return {}
 
 acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
-acc.addSavingGoal("hi")
-
+# print(acc.returnSavingGoals())
