@@ -25,6 +25,14 @@ class account:
         else:
             return json.loads(r.text)
 
+    def post_req (self, url, d):
+        r = reuests.post(url, headers=self.headers, data=json.dumps(d))
+        print(r.text)
+        if status_code != 200:
+            return []
+        else:
+            return json.loads(r.text)
+
     def delete_req(self, url):
         r = requests.delete(url, headers=self.headers)
         return {}
@@ -53,13 +61,18 @@ class account:
     def returnAccNumber(self):
         accountData = self.getAccountData()
         speech = "Your account number is "+str(data['number'])+"."
-        
         return {"speech":speech,"action":"returnSortCode"}
 
-    def returnAllTransactions(self):
+    # TRANSACTIONS
+    def getAllTransactions(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/transactions")
+        return data['_embedded']['transactions']
 
-        transactions = data['_embedded']['transactions']
+    def returnAllTransactions(self):
+        return self.returnTransactions(self.getAllTransactions())
+
+    def returnTransactions(self, data):
+        transactions = data
 
         speech = ""
         for transaction in transactions:
@@ -70,6 +83,25 @@ class account:
             speech += msg
 
         return {"speech":speech, "action":"returnTransactions"}
+
+    # PAYMENT SCHEDULES
+    def getAllPaymentSchedules(self):
+        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled")
+        paymentOrders = data ['_embedded'] ['paymentOrders']
+        return paymentOrders
+
+    def returnAllPaymentSchedules(self):
+        return self.returnPaymentSchedules(self.getAllPaymentSchedules())
+
+    def returnPaymentSchedules(self, data):
+        paymentOrders = data
+
+        speech = ""
+        for payment in paymentOrders:
+            msg =  "This payment is for "+payment['reference'] + " for" + payment['recipientName'] + "of amount " + payment['amount']+"\n"
+            speech += msg
+
+        return speech
 
     # SAVING GOALS 
     def returnAllSavingGoals(self):
@@ -149,30 +181,3 @@ class account:
                 return self.returnSavingGoals({"savingsGoalList":[savingGoal]})
 
         return {"speech": "Couldn't find that goal!", "action":"returnSavingGoal"}
-
-    def returnPaymentSchedules(self):
-        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled")
-        print("hello ", data)
-        paymentOrders = data ['_embedded'] ['paymentOrders']
-        speech = ""
-        for payment in paymentOrders:
-            msg = "This payment is for " + payment['reference'] + " for"+ " Raymond Davis" +" of amount"+ str(payment['amount'])+"\n"
-            speech += msg
-        return {"speech":speech, "action":"returnPaymentSchedules"}
-
-    def addPaymentSchedule(self, data):
-        # handle data after dialogflow is setup
-        # TODO
-        data =  {
-                    "payment": {
-                    "currency": "GBP",
-                    "amount": 10.24
-                    },
-                    "reference": "Dinner",
-                    "destinationAccountUid": "b43d3060-2c83-4bb9-ac8c-c627b9c45f8b",
-                    "recurrenceRule": {}
-                }
-                
-        self.post_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled",data)
-        speech = "You added a new payment schedule. "
-        return {"speech": speech, "action":"addPaymentSchedule"}
