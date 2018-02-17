@@ -102,6 +102,7 @@ class account:
 
         return speech
         
+        
     # SAVING GOALS 
     def getSavingGoals(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals")
