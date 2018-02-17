@@ -42,18 +42,12 @@ class account:
         
         return {"speech":speech,"action":"returnSortCode"}
 
-    def returnTransactions(self):
-        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/transactions")
 
-        transactions = data['transactions']
+    def getPaymentSchedules(self):
+        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled")
+        #paymentOrders = data ['paymentOrders']
 
-        speech = ""
-        for transaction in transaction:
-            if transaction['direction'] == "OUTBOUND":
-                msg = "Outbound transaction. Amount going out: " + str(transaction['amount']*-1) + " balance remaining: " + str(transaction['balance']) + " Date : " + str(transaction['created']) + "\n"
-            else:
-                msg = "Inbound transaction. Amount going in: " + str(transaction['amount']) + " balance remaining: " + str(transaction['balance']) + " Date : " + str(transaction['created']) + "\n"
-            speech += msg
+        print(data)
 
-        return {"speech":speech, "action":"returnTransactions"}
-
+acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
+acc.getPaymentSchedules()
