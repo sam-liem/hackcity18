@@ -150,8 +150,28 @@ class account:
 
         return {"speech": "Couldn't find that goal!", "action":"getSavingGoal"}
 
-# acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
-# print(acc.returnAllTransactions())
-# print(acc.returnAllSavingGoals())
-# print(acc.getSavingGoal("Trip to Paris"))
+    def returnPaymentSchedules(self):
+        data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled")
+        print("hello ", data)
+        paymentOrders = data ['_embedded'] ['paymentOrders']
+        speech = ""
+        for payment in paymentOrders:
+            msg = "This payment is for " + payment['reference'] + " for"+ " Raymond Davis" +" of amount"+ str(payment['amount'])+"\n"
+            speech += msg
+        return {"speech":speech, "action":"returnPaymentSchedules"}
 
+
+    def addPaymentSchedules (self):
+
+        data =  {
+                    "payment": {
+                    "currency": "GBP",
+                    "amount": 10.24
+                    },
+                    "reference": "Dinner",
+                    "destinationAccountUid": "b43d3060-2c83-4bb9-ac8c-c627b9c45f8b",
+                    "recurrenceRule": {}
+                }
+                
+        self.post_req("https://api-sandbox.starlingbank.com/api/v1/payments/scheduled",data)
+        print(self.returnPaymentSchedules())
