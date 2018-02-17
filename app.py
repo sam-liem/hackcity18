@@ -60,12 +60,16 @@ def processRequest(req):
         data = acc.addSavingGoal(req)
 
     elif action == "getAllSavingGoals":
-        data = acc.returnAllSavingGoal()
+        data = acc.returnAllSavingGoals()
 
     elif action == "deleteSavingGoal":
+        # temp
+        req['goalName'] = "Trip to Paris"
         data = acc.deleteSavingGoal(req['goalName'])
 
     elif action == "getSavingsGoal":
+        # temp
+        req['goalName'] = "Trip to Paris"
         data = acc.returnSavingGoal(req['goalName'])
 
     elif action == "getAllPaymentSchedules":
