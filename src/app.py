@@ -40,6 +40,9 @@ def dashboard_processRequest(action):
     if action == "getUserInfo":
         return acc.getUserInfo()
 
+    if action == "getAllAnalytics":
+        return acc.getAllAnalyticsData()
+
 
 @app.route('/dialogFlow', methods=['POST'])
 def dialogFlow():

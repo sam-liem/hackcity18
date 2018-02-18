@@ -205,7 +205,15 @@ class account:
 
         return {"speech": "Couldn't find that goal!", "action":"returnSavingGoal"}
 
-    # ANALYTICS
+    # ANALYTIC
+    def getAllAnalyticsData(self):
+        totalInbound = self.getTotalInbound()
+        totalOutbound = self.getTotalOutbound()
+        averageInbound = self.getAverageInbound()
+        averageOutbound = self.getAverageOutbound()
+
+        return {"totalInbound":totalInbound, "totalOutbound":totalOutbound, "averageInbound":averageInbound, "averageOutbound": averageOutbound}
+
     def processTransactions(self):
         transactions = self.getAllTransactions()
         transactions.reverse()
