@@ -25,14 +25,10 @@ class account:
                     "reference": name
                 }
 
-        res = httpHelper.post_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/payments/local", data)
-        speech = ""
-        if res == {}:
-            speech = "Transfer failed"
-        else:
-            speech = "Transfer success"
-
-        return {"speech":speech,"action":"transfer"}
+        # res = httpHelper.post_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/payments/local", data)
+        res = httpHelper.post_req(self.token, "http://32325652.ngrok.io/", data)
+        
+        return {"speech":"Transfer success","action":"transfer"}
 
     # userInfo 
     def getUserInfo(self):
@@ -205,12 +201,23 @@ class account:
 
         return {"speech": "Couldn't find that goal!", "action":"returnSavingGoal"}
 
-    # ANALYTICS
+    # ANALYTIC
+    def getAllAnalyticsData(self):
+        totalInbound = self.getTotalInbound(30)
+        totalOutbound = self.getTotalOutbound(30)
+        averageInbound = self.getAverageInbound(30)
+        averageOutbound = self.getAverageOutbound(30)
+        allInbound = self.getAllInbounds()
+        allOutbound = self.getAllOutbounds()
+
+        return {"totalInbound":totalInbound, "totalOutbound":totalOutbound, "averageInbound":averageInbound, "averageOutbound": averageOutbound, "allInbound": allInbound, "allOutbound":allOutbound}
+
     def processTransactions(self):
         transactions = self.getAllTransactions()
         transactions.reverse()
         self.analysis = Analytics(transactions)
         self.analysis.process()
+
         # return {"speech":speech, "action":"analysedTransactions"}
     
     def getTotalInbound(self, day):
@@ -218,15 +225,15 @@ class account:
 
     def returnTotalInbound(self, day):
         total = self.analysis.getTotalInBound(day)
-        speech = "In " + day + "days " + "you received a total of: £ " + str(total)
+        speech = "In " + day + " days " + "you received a total of: £" + str(float("{0:.2f}".format(total)))
         return {"speech": speech, "action": "returnTotalInBound"}
 
     def getTotalOutbound(self, day):
         return self.analysis.getTotalOutbound(int(day))
 
     def returnTotalOutbound(self, day):
-        total = self.getTotalInbound(day)
-        speech = "In " + day + "days " + "you spent a total of: £ " + str(total)
+        total = self.getTotalOutbound(day)
+        speech = "In " + day + " days " + "you spent a total of: £" + str(float("{0:.2f}".format(total)))
         return {"speech": speech, "action": "returnTotalOutbound"}
 
     def getAverageInbound(self, interval):
@@ -234,18 +241,23 @@ class account:
 
     def returnAverageInbound(self, interval):
         avg = self.analysis.getAverageInbound(int(interval))
-        print("Average: ", avg)
-        speech = "Over " + str(interval) + "days, you receive an average of: " + str(avg)
+        speech = "Over " + str(interval) + " days, you receive an average of: " + str(float("{0:.2f}".format(avg)))
         return {"speech": speech, "action": "returnAverageInbound"}
 
     def returnAverageOutbound(self, interval):
         avg = self.analysis.getAverageOutbound(int(interval))
         print("Average: ", avg)
-        speech = "Over " + str(interval) + "days, you spend an average of: " + str(avg)
+        speech = "Over " + str(interval) + " days, you spend an average of: " + str(float("{0:.2f}".format(avg)))
         return {"speech": speech, "action": "returnAverageOutbound"}
 
     def getAverageOutbound(self, interval):
         return self.analysis.getTotalOutbound(interval)
+
+    def getAllInbounds(self):
+        return self.analysis.getInboundPoints()
+
+    def getAllOutbounds(self):
+        return self.analysis.getOutboundPoints()
 
     def setSpreadsheet(self):
         transactions = self.getAllTransactions()
