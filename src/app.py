@@ -124,25 +124,21 @@ def dialogFlow_processRequest(req):
         # can't get good uuid in sandbox
         data = {"speech":"Transfer successful."}
 
-<<<<<<< Updated upstream
-
-=======
     elif action == "getTotalInbound": # get (total inbound/ earning) information for the last 5 days
-        days = 5
+        days = req.get("result").get("parameters").get("days")
         data = acc.returnTotalInbound(days)
 
     elif action == "getTotalOutbound": # get (total outbound/ spending) information for the last 5 days
-        days = 5
+        days = req.get("result").get("parameters").get("days")
         data = acc.returnTotalOutbound(days)
 
     elif action == "getAverageInbound": # get average earning for a 5 day period
-        interval = 5
+        interval = req.get("result").get("parameters").get("interval")
         data = acc.returnAverageInbound(interval)
 
     elif action == "getAverageOutbound": # get average spending for a 5 day period
-        interval = 5
+        interval = req.get("result").get("parameters").get("interval")
         data = acc.returnAverageOutbound(interval)
->>>>>>> Stashed changes
 
     else:
         return {}
