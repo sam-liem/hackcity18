@@ -237,7 +237,7 @@ class account:
 
     def returnTotalOutbound(self, day):
         total = self.getTotalOutbound(day)
-        speech = "In " + day + "days " + "you spent a total of: £ " + str(float("{0:.2f}".format(total)))
+        speech = "In " + day + " days " + "you spent a total of: £ " + str(float("{0:.2f}".format(total)))
         return {"speech": speech, "action": "returnTotalOutbound"}
 
     def getAverageInbound(self, interval):
@@ -245,13 +245,13 @@ class account:
 
     def returnAverageInbound(self, interval):
         avg = self.analysis.getAverageInbound(int(interval))
-        speech = "Over " + str(interval) + "days, you receive an average of: " + str(float("{0:.2f}".format(avg)))
+        speech = "Over " + str(interval) + " days, you receive an average of: " + str(float("{0:.2f}".format(avg)))
         return {"speech": speech, "action": "returnAverageInbound"}
 
     def returnAverageOutbound(self, interval):
         avg = self.analysis.getAverageOutbound(int(interval))
         print("Average: ", avg)
-        speech = "Over " + str(interval) + "days, you spend an average of: " + str(float("{0:.2f}".format(avg)))
+        speech = "Over " + str(interval) + " days, you spend an average of: " + str(float("{0:.2f}".format(avg)))
         return {"speech": speech, "action": "returnAverageOutbound"}
 
     def getAverageOutbound(self, interval):
