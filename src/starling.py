@@ -211,14 +211,17 @@ class account:
         totalOutbound = self.getTotalOutbound()
         averageInbound = self.getAverageInbound()
         averageOutbound = self.getAverageOutbound()
+        allInbound = self.getAllInbounds()
+        allOutbound = self.getAllOutbounds()
 
-        return {"totalInbound":totalInbound, "totalOutbound":totalOutbound, "averageInbound":averageInbound, "averageOutbound": averageOutbound}
+        return {"totalInbound":totalInbound, "totalOutbound":totalOutbound, "averageInbound":averageInbound, "averageOutbound": averageOutbound, "allInbound": allInbound, "allOutbound":allOutbound}
 
     def processTransactions(self):
         transactions = self.getAllTransactions()
         transactions.reverse()
         self.analysis = Analytics(transactions)
         self.analysis.process()
+
         # return {"speech":speech, "action":"analysedTransactions"}
     
     def getTotalInbound(self, day):
@@ -254,6 +257,12 @@ class account:
 
     def getAverageOutbound(self, interval):
         return self.analysis.getTotalOutbound(interval)
+
+    def getAllInbounds(self):
+        return self.analysis.getInboundPoints()
+
+    def getAllOutbounds(self):
+        return self.analysis.getOutboundPoints()
 
     def setSpreadsheet(self):
         transactions = self.getAllTransactions()

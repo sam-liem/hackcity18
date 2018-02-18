@@ -43,6 +43,11 @@ def dashboard_processRequest(action):
     if action == "getAllAnalytics":
         return acc.getAllAnalyticsData()
 
+    if action == "getAllInbounds":
+        return acc.getAllInbounds()
+
+    if action == "getAllOutbounds":
+        return acc.getAllOutbounds()
 
 @app.route('/dialogFlow', methods=['POST'])
 def dialogFlow():
@@ -118,6 +123,22 @@ def dialogFlow_processRequest(req):
         # data = acc.transfer(contactName,transactionAmount,transactionReference)
         # can't get good uuid in sandbox
         data = {"speech":"Transfer successful."}
+
+    elif action == "getTotalInbound": # get (total inbound/ earning) information for the last 5 days
+        days = req.get("result").get("parameters").get("days")
+        data = acc.returnTotalInbound(days)
+
+    elif action == "getTotalOutbound": # get (total outbound/ spending) information for the last 5 days
+        days = req.get("result").get("parameters").get("days")
+        data = acc.returnTotalOutbound(days)
+
+    elif action == "getAverageInbound": # get average earning for a 5 day period
+        interval = req.get("result").get("parameters").get("interval")
+        data = acc.returnAverageInbound(interval)
+
+    elif action == "getAverageOutbound": # get average spending for a 5 day period
+        interval = req.get("result").get("parameters").get("interval")
+        data = acc.returnAverageOutbound(interval)
 
     else:
         return {}
