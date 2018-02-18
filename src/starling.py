@@ -206,6 +206,17 @@ class account:
 
         return {"speech": "Couldn't find that goal!", "action":"returnSavingGoal"}
 
+    # ANALYTIC
+    def getAllAnalyticsData(self):
+        totalInbound = self.getTotalInbound()
+        totalOutbound = self.getTotalOutbound()
+        averageInbound = self.getAverageInbound()
+        averageOutbound = self.getAverageOutbound()
+        allInbound = self.getAllInbounds()
+        allOutbound = self.getAllOutbounds()
+
+        return {"totalInbound":totalInbound, "totalOutbound":totalOutbound, "averageInbound":averageInbound, "averageOutbound": averageOutbound, "allInbound": allInbound, "allOutbound":allOutbound}
+
     def processTransactions(self):
         transactions = self.getAllTransactions()
         transactions.reverse()
@@ -249,6 +260,12 @@ class account:
     def getAverageOutbound(self, interval):
         return self.analysis.getTotalOutbound(interval)
 
+    def getAllInbounds(self):
+        return self.analysis.getInboundPoints()
+
+    def getAllOutbounds(self):
+        return self.analysis.getOutboundPoints()
+
     def setSpreadsheet(self):
         transactions = self.getAllTransactions()
         to_csv = csvHelper.to_csv(transactions)
@@ -256,5 +273,5 @@ class account:
 
 #acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
 #acc.getContactFromName("Heywood Floyd")
-hughJass = account("wFaT0lPDGalC7GBqdacZ7aDYn5RhsDqW4wfrgPjYpd85xoTyijn8hnWzK6BAK4Si")
-hughJass.processTransactions()
+# hughJass = account("wFaT0lPDGalC7GBqdacZ7aDYn5RhsDqW4wfrgPjYpd85xoTyijn8hnWzK6BAK4Si")
+# hughJass.processTransactions()
