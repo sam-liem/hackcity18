@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import createBrowserHistory from 'history/createBrowserHistory'
+
 // import logo from './logo.svg';
 // import './App.css';
 
@@ -6,7 +8,12 @@ import UserInfoBox from './components/UserInfoBox'
 import ExpenseDistrPiechart from './components/ExpenseDistrPiechart'
 import TransactionTable from './components/TransactionTable'
 import NavBar from './components/NavBar'
+import VisualsComponent from './components/VisualsComponent'
 
+import { BrowserRouter, Route, Link } from 'react-router-dom'
+import { Switch } from 'react-router'
+
+const history = createBrowserHistory()
 
 class App extends Component {
   constructor() {
@@ -122,23 +129,43 @@ class App extends Component {
     const { ioBoundObjArr } = this.state
 
     return (
-      <div className="hide-overflow">
-        <NavBar />
-        <div className="container">
-          <div className="row" style={{ marginBottom: "30px" }}>
-            <div className="col-md-6">
-              <UserInfoBox user={user} />
-            </div>
-            <div className="col-md-6">
-              <ExpenseDistrPiechart ioBoundObjArr={ioBoundObjArr} />
-            </div>
+      <BrowserRouter history={history}>
+        <div className="hide-overflow">
+          <NavBar />
+
+          <div className="container">
+
+            <Switch>
+              <Route exact path="/" render={() => {
+                return (
+                  <React.Fragment>
+                    <div className="row" style={{ marginBottom: "30px" }}>
+                      <div className="col-md-6">
+                        <UserInfoBox user={user} />
+                      </div>
+                      <div className="col-md-6">
+                        <ExpenseDistrPiechart ioBoundObjArr={ioBoundObjArr} />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <TransactionTable transactionTableRowsList={transactionTableRowsList} />
+                    </div>
+                  </React.Fragment>
+
+                )
+              }} />
+
+              <Route exact path="/visuals" render={() => {
+                return (
+                  <VisualsComponent />
+                );
+              }} />
+            </Switch>
+
           </div>
-          <div className="row">
-            <TransactionTable transactionTableRowsList={transactionTableRowsList} />
-          </div>
+          <div className="footer text-center "><h1>created with &#9829; and Time Limit in mind   ¯\_(ツ)_/¯</h1></div>
         </div>
-        <div className="footer text-center "><h1>created with &#9829; and Time Limit in mind   ¯\_(ツ)_/¯</h1></div>
-      </div>
+      </BrowserRouter >
     );
   }
 }

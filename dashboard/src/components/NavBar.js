@@ -1,35 +1,41 @@
 import React, { Component } from 'react';
 
-import { 
-    Navbar, 
-    Nav, 
+import {
+    Navbar,
+    Nav,
     NavItem,
     NavDropdown,
     MenuItem,
 } from 'react-bootstrap'
 
+import { BrowserRouter, Route, Link } from 'react-router-dom'
+
+import { LinkContainer } from 'react-router-bootstrap'
+import { IndexLinkContainer } from 'react-router-bootstrap'
 
 class App extends Component {
     render() {
         return (
             <Navbar>
                 <Navbar.Header>
+
                     <Navbar.Brand>
-                        <a href="/">Starling Bank</a>
+                        <IndexLinkContainer to="/" activeClassName="active">
+                            <NavItem>Home</NavItem>
+                        </IndexLinkContainer>
+
                     </Navbar.Brand>
+
                 </Navbar.Header>
                 <Nav>
-                    <NavItem eventKey={1} href="#">
-                        Link
+                <LinkContainer to="/visuals" activeClassName="active">
+                    <NavItem eventKey={1}>
+                        
+                            Visuals
+                           
                     </NavItem>
-                    
-                    <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
-                        <MenuItem eventKey={3.1}>Action</MenuItem>
-                        <MenuItem eventKey={3.2}>Another action</MenuItem>
-                        <MenuItem eventKey={3.3}>Something else here</MenuItem>
-                        <MenuItem divider />
-                        <MenuItem eventKey={3.4}>Separated link</MenuItem>
-                    </NavDropdown>
+                     </LinkContainer>
+
                 </Nav>
             </Navbar>
         );
