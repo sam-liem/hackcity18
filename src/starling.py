@@ -1,12 +1,13 @@
 import json
 import httpHelper
 import csvHelper
-
+from analytics import Analytics
 class account:
 
     def __init__ (self,token):
         self.loggin = False
         self.token = token
+        self.processTransactions()
 
     # TRANSER
     def transfer(self, recipientName, a, name ):
@@ -205,9 +206,54 @@ class account:
 
         return {"speech": "Couldn't find that goal!", "action":"returnSavingGoal"}
 
+    def processTransactions(self):
+        transactions = self.getAllTransactions()
+        transactions.reverse()
+        self.analysis = Analytics(transactions)
+        self.analysis.process()
+        # return {"speech":speech, "action":"analysedTransactions"}
+
+    # SAVING GOALS
+    def getTotalInbound(self, day):
+        return self.analysis.getTotalInbound(int(day))
+
+    def returnTotalInbound(self, day):
+        total = self.analysis.getTotalInBound(day)
+        speech = "In " + day + "days " + "you received a total of: £ " + str(total)
+        return {"speech": speech, "action": "returnTotalInBound"}
+
+    def getTotalOutbound(self, day):
+        return self.analysis.getTotalOutbound(int(day))
+
+    def returnTotalOutbound(self, day):
+        total = self.getTotalInbound(day)
+        speech = "In " + day + "days " + "you spent a total of: £ " + str(total)
+        return {"speech": speech, "action": "returnTotalOutbound"}
+
+    def getAverageInbound(self, interval):
+        return self.analysis.getAverageInbound(interval)
+
+    def returnAverageInbound(self, interval):
+        avg = self.analysis.getAverageInbound(int(interval))
+        print("Average: ", avg)
+        speech = "Over " + str(interval) + "days, you receive an average of: " + str(avg)
+        return {"speech": speech, "action": "returnAverageInbound"}
+
+    def returnAverageOutbound(self, interval):
+        avg = self.analysis.getAverageOutbound(int(interval))
+        print("Average: ", avg)
+        speech = "Over " + str(interval) + "days, you spend an average of: " + str(avg)
+        return {"speech": speech, "action": "returnAverageOutbound"}
+
+    def getAverageOutbound(self, interval):
+        return self.analysis.getTotalOutbound(interval)
+
     def setSpreadsheet(self):
         transactions = self.getAllTransactions()
         to_csv = csvHelper.to_csv(transactions)
 
-acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
-acc.getContactFromName("Heywood Floyd")
+
+#acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
+#acc.getContactFromName("Heywood Floyd")
+hughJass = account("wFaT0lPDGalC7GBqdacZ7aDYn5RhsDqW4wfrgPjYpd85xoTyijn8hnWzK6BAK4Si")
+hughJass.processTransactions()
