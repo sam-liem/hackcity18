@@ -42,7 +42,7 @@ class Analytics(object):
         return datetimeObj
                                 
     def alterDates (self):
-        random.seed(1)
+        random.seed()
         dateObj = self.getBaseDate()
         self.transactions[0]['created'] = dateObj
       
@@ -106,9 +106,9 @@ class Analytics(object):
         return (self.interpolate(self.inbounds_cumulative, self.inbounds_cumulative[-1].day_num)-
                self.interpolate (self.inbounds_cumulative, self.inbounds_cumulative[-1].day_num-day))
 
-    def getTotalOutbound (self, days):
-        return (self.interpolate(self.outbunds_cumulative, self.outbounds_cumulative[-1].day_num) -
-                self.interpolate(self.outbounds_cumulative, self.bounds_cumulative[-1].day_num - day))
+    def getTotalOutbound (self, day):
+        return (self.interpolate(self.outbounds_cumulative, self.outbounds_cumulative[-1].day_num) -
+                self.interpolate(self.outbounds_cumulative, self.outbounds_cumulative[-1].day_num - day))
 
     def getAverage (self, inbound_outbound, day_inverval):
         #Gets average amount of money in total every day_interval days
