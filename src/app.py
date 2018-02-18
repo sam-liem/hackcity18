@@ -10,6 +10,7 @@ import os
 from flask import Flask
 from flask import request
 from flask import make_response
+from flask import send_from_directory
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -75,6 +76,10 @@ def processRequest(req):
     elif action == "getAllPaymentSchedules":
         data = acc.returnAllPaymentSchedules()
 
+    elif action == "csv":
+        url = request.url_root + "downloadCSV"
+        data = {"speech":url}
+
     else:
         return {}
 
@@ -95,6 +100,12 @@ def makeWebhookResult(data):
         "source": "starlingBotAPI"
     }
 
+@app.route('/downloadCSV', methods=['GET'])
+def downloadCSV():
+    acc = account("wzebJBlstyLeJEi6pTYiC0XUf2DL5W77pi9xKpM8UkykLXVgsipLWYe1p37gRxZX")
+    data = acc.setSpreadsheet()
+
+    return send_from_directory(os.getcwd()+'/tmp', "bankData.csv", as_attachment=True)
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
