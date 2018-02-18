@@ -85,10 +85,7 @@ class Analytics(object):
             prev = inbound_outbounds[trans-1]
             curr = inbound_outbounds[trans]
 
-            if prev.day_num == day:
-                return prev.cumulative_total
-
-            if curr.day_num == day:
+            if prev.day_num == day or curr.day_num == day:
                 return prev.cumulative_total
 
             if not (prev.day_num < day and day < curr.day_num):
@@ -105,10 +102,12 @@ class Analytics(object):
 
 
     def getTotalInbound (self, day):
-        return self.interpolate (self.inbounds_cumulative, day)
+        return (self.interpolate(self.inbounds_cumulative, self.inbounds_cumulative[-1].day_num)-
+               self.interpolate (self.inbounds_cumulative, self.inbounds_cumulative[-1].day_num-day))
 
     def getTotalOutbound (self, days):
-        return self.interpolate(self.outbounds_cumulative,day)
+        return (self.interpolate(self.outbunds_cumulative, self.outbounds_cumulative[-1].day_num) -
+                self.interpolate(self.outbounds_cumulative, self.bounds_cumulative[-1].day_num - day))
 
     def getAverage (self, inbound_outbound, day_inverval):
         #Gets average amount of money in total every day_interval days
@@ -207,7 +206,9 @@ class Analytics(object):
         print ("Getting outbounds accumulation: ")
         for trans in self.outbounds_cumulative:
             print("Day: ", trans.day_num, " total: ", trans.cumulative_total)
+
         """
+
 
 
     def highestExpense(self, transactions):
