@@ -20,9 +20,9 @@ def put_req(tok, url, d):
 
 def post_req (tok, url, d):
     h = getHeader(tok)
-    r = reuests.post(url, headers=h, data=json.dumps(d))
-    if status_code != 200:
-        return []
+    r = requests.post(url, headers=h, data=json.dumps(d))
+    if r.status_code != 200:
+        return {}
     else:
         return json.loads(r.text)
 

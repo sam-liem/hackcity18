@@ -8,6 +8,25 @@ class account:
         self.loggin = False
         self.token = token
 
+    # TRANSER
+    def transfer(self, dest, a, name ):
+        data = {
+                    "payment": {
+                    "currency": "GBP",
+                        "amount": a
+                    },
+                    "destinationAccountUid": dest,
+                    "reference": name
+                }
+        res = httpHelper.post_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/payments/local", data)
+        speech = ""
+        if res == {}:
+            speech = "Transfer failed"
+        else:
+            speech = "Transfer success"
+
+        return {"speech":speech,"action":"transfer"}
+
     # userInfo 
     def getUserInfo(self):
         accountData = self.getAccountData()
@@ -86,7 +105,7 @@ class account:
             msg =  "This payment is for "+payment['reference'] + " for" + payment['recipientName'] + "of amount " + payment['amount']+"\n"
             speech += msg
 
-        return speech
+        return {"speech":speech, "action":"returnPaymentSchedules"}
 
     # SAVING GOALS 
     def returnAllSavingsGoals(self):
@@ -120,8 +139,6 @@ class account:
         return data
 
     def addSavingsGoal(self, goalName, goalAmount):
-        # handle data after dialogflow is setup
-        # TODO
         data = {
                   "name": goalName,
                   "currency": "GBP",

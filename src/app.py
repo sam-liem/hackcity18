@@ -107,6 +107,10 @@ def dialogFlow_processRequest(req):
         url = request.url_root + "downloadCSV"
         data = {"speech":url}
 
+    elif action == "transfer":
+        # data = acc.transfer("7f03a23a-bafc-4479-8d4d-abb6a9119d27",100,"dinner")
+        # can't get good uuid in sandbox
+        data = {"speech":"Transfer successful."}
     else:
         return {}
 
