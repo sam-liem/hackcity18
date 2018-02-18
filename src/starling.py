@@ -211,6 +211,7 @@ class account:
         transactions.reverse()
         self.analysis = Analytics(transactions)
         self.analysis.process()
+
         # return {"speech":speech, "action":"analysedTransactions"}
 
     # SAVING GOALS

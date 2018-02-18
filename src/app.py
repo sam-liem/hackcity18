@@ -116,6 +116,8 @@ def dialogFlow_processRequest(req):
         # can't get good uuid in sandbox
         data = {"speech":"Transfer successful."}
 
+
+
     else:
         return {}
 

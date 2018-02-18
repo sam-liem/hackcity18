@@ -2,6 +2,7 @@
 from datetime import datetime
 import random
 import operator
+import json
 
 
 class Accumulation(object):
@@ -210,6 +211,25 @@ class Analytics(object):
         """
 
 
+    def getAllbounds(self, inbound_outbound):
+        #Day, Accumulation, Current Balance Date
+        balanceDays = {}
+        graph = []
+
+        for i in inbound_outbound:
+            miniDict = {}
+            miniDict['Day'] = i.day_num
+            miniDict['Cumulative'] = i.cumulative_total
+            graph += [miniDict]
+
+        balanceDays['graph'] = graph
+        return json.loads(json.dumps(balanceDays) )
+
+    def getInboundPoints (self):
+        return self.getAllbounds(self.inbounds_cumulative)
+
+    def getOutboundPoints (self):
+        return self.getAllbounds(self.outbounds_cumulative)
 
     def highestExpense(self, transactions):
         transactions = transactions['_embedded']['transactions']
