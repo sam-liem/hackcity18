@@ -81,6 +81,9 @@ def dialogFlow_processRequest(req):
     elif action == "getAllTransactions":
         data = acc.returnAllTransactions()
     
+    elif action == "getRecentTransaction":
+        data = acc.returnRecentTransaction()
+
     elif action == "addSavingsGoal":
         goalName = req.get("result").get("parameters").get("goalName")
         goalAmount = req.get("result").get("parameters").get("goalAmount")

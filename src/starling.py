@@ -52,6 +52,10 @@ class account:
     def returnAllTransactions(self):
         return self.returnTransactions(self.getAllTransactions())
 
+    def returnRecentTransaction(self):
+        data = self.getAllTransactions()
+        return self.returnTransactions([data[0]])
+
     def returnTransactions(self, data):
         transactions = data
 
