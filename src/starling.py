@@ -34,7 +34,6 @@ class account:
 
         return {"speech":speech,"action":"transfer"}
 
-
     # userInfo 
     def getUserInfo(self):
         accountData = self.getAccountData()
@@ -224,8 +223,7 @@ class account:
         self.analysis.process()
 
         # return {"speech":speech, "action":"analysedTransactions"}
-
-    # SAVING GOALS
+    
     def getTotalInbound(self, day):
         return self.analysis.getTotalInbound(int(day))
 
