@@ -1,5 +1,6 @@
 import json
 import httpHelper
+import csvHelper
 
 class account:
 
@@ -47,9 +48,9 @@ class account:
         speech = ""
         for transaction in transactions:
             if transaction['direction'] == "OUTBOUND":
-                msg = "Outbound transaction. Amount going out: " + str(transaction['amount']*-1) + " balance remaining: " + str(transaction['balance']) + " Date : " + str(transaction['created']) + "\n"
+                msg = "Outbound transaction. Amount going out: " + str(transaction['amount']*-1) + " balance remaining: " + str(transaction['balance']) + " Date : " + str(transaction['created']) + "\n\n\n"
             else:
-                msg = "Inbound transaction. Amount going in: " + str(transaction['amount']) + " balance remaining: " + str(transaction['balance']) + " Date : " + str(transaction['created']) + "\n"
+                msg = "Inbound transaction. Amount going in: " + str(transaction['amount']) + " balance remaining: " + str(transaction['balance']) + " Date : " + str(transaction['created']) + "\n\n\n"
             speech += msg
 
         return {"speech":speech, "action":"returnTransactions"}
@@ -152,3 +153,7 @@ class account:
                 return self.returnSavingGoals({"savingsGoalList":[savingGoal]})
 
         return {"speech": "Couldn't find that goal!", "action":"returnSavingGoal"}
+
+    def setSpreadsheet(self):
+        transactions = self.getAllTransactions()
+        to_csv = csvHelper.to_csv(transactions)
