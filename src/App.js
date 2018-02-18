@@ -5,6 +5,8 @@ import React, { Component } from 'react';
 import UserInfoBox from './components/UserInfoBox'
 import ExpenseDistrPiechart from './components/ExpenseDistrPiechart'
 import TransactionTable from './components/TransactionTable'
+import NavBar from './components/NavBar'
+
 
 class App extends Component {
   constructor() {
@@ -13,6 +15,7 @@ class App extends Component {
     this.state = {
       transactionTableRowsList: [],
       user: {},
+      ioBoundObjArr:[],
     }
   }
 
@@ -28,6 +31,28 @@ class App extends Component {
         this.setState({
           transactionTableRowsList: data,
         })
+
+        let sumOutBounds=0;
+        let sumInBounds=0;
+
+        if(data){
+          data.forEach(datum=>{
+            if(datum.direction==="INBOUND"){
+              sumOutBounds+=datum.amount
+            }else{
+              sumInBounds+=datum.amount
+            }
+          })
+
+          let ioBoundObjArr=[
+            {name:"INBOUND", value:Math.round(sumInBounds)},
+            {name:"OUTBOUND", value:Math.round(sumOutBounds)},
+          ]
+
+          this.setState({
+            ioBoundObjArr,
+          })
+        }
       })
 
     fetch("https://skm-starlingbot.herokuapp.com/dashboard?action=getUserInfo")
@@ -36,30 +61,38 @@ class App extends Component {
         console.log("fetched USER", data);
 
         this.setState({
-          user:data,
+          user: data,
         })
+
+       
+        
       })
 
 
   }
 
   render() {
-    const { transactionTableRowsList } = this.state
+    const { transactionTableRowsList } = this.state 
     const { user } = this.state
+    const { ioBoundObjArr } = this.state
 
     return (
-      <div className="container">
-        <div className="row" style={{marginBottom:"30px"}}>
-          <div className="col-md-6">
-            <UserInfoBox user={user} />
+      <div className="hide-overflow">
+        <NavBar />
+        <div className="container">
+          <div className="row" style={{ marginBottom: "30px" }}>
+            <div className="col-md-6">
+              <UserInfoBox user={user} />
+            </div>
+            <div className="col-md-6">
+              <ExpenseDistrPiechart ioBoundObjArr={ioBoundObjArr} />
+            </div>
           </div>
-          <div className="col-md-6">
-            <ExpenseDistrPiechart />
+          <div className="row">
+            <TransactionTable transactionTableRowsList={transactionTableRowsList} />
           </div>
         </div>
-        <div className="row">
-          <TransactionTable transactionTableRowsList={transactionTableRowsList} />
-        </div>
+        <div className="footer text-center "><h1>created with &#9829; and Time Limit in mind   ¯\_(ツ)_/¯</h1></div>
       </div>
     );
   }
