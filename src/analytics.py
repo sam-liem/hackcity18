@@ -102,11 +102,11 @@ class Analytics(object):
 
 
     def getTotalInbound (self, day):
-        return (self.interpolate(self.inbounds_cumulative, self.inbounds_cumulative[-1].day_num-1)-
+        return (self.interpolate(self.inbounds_cumulative, self.inbounds_cumulative[-1].day_num)-
                self.interpolate (self.inbounds_cumulative, self.inbounds_cumulative[-1].day_num-day))
 
     def getTotalOutbound (self, days):
-        return (self.interpolate(self.outbunds_cumulative, self.outbounds_cumulative[-1].day_num - 1) -
+        return (self.interpolate(self.outbunds_cumulative, self.outbounds_cumulative[-1].day_num) -
                 self.interpolate(self.outbounds_cumulative, self.bounds_cumulative[-1].day_num - day))
 
     def getAverage (self, inbound_outbound, day_inverval):
