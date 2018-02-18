@@ -34,7 +34,6 @@ class account:
 
         return {"speech":speech,"action":"transfer"}
 
-
     # userInfo 
     def getUserInfo(self):
         accountData = self.getAccountData()
@@ -206,14 +205,14 @@ class account:
 
         return {"speech": "Couldn't find that goal!", "action":"returnSavingGoal"}
 
+    # ANALYTICS
     def processTransactions(self):
         transactions = self.getAllTransactions()
         transactions.reverse()
         self.analysis = Analytics(transactions)
         self.analysis.process()
         # return {"speech":speech, "action":"analysedTransactions"}
-
-    # SAVING GOALS
+    
     def getTotalInbound(self, day):
         return self.analysis.getTotalInbound(int(day))
 
@@ -255,5 +254,5 @@ class account:
 
 #acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
 #acc.getContactFromName("Heywood Floyd")
-hughJass = account("wFaT0lPDGalC7GBqdacZ7aDYn5RhsDqW4wfrgPjYpd85xoTyijn8hnWzK6BAK4Si")
-hughJass.processTransactions()
+# hughJass = account("wFaT0lPDGalC7GBqdacZ7aDYn5RhsDqW4wfrgPjYpd85xoTyijn8hnWzK6BAK4Si")
+# hughJass.processTransactions()
