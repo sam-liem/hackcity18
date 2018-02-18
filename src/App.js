@@ -66,53 +66,53 @@ class App extends Component {
         })
       })
 
-      this.interval=this.setInterval(()=>{
-        fetch("https://skm-starlingbot.herokuapp.com/dashboard?action=getAllTransactions")
-      .then(res => res.json())
-      .then((data) => {
-        console.log("fetched", data);
-
-        this.setState({
-          transactionTableRowsList: data,
-        })
-
-        let sumOutBounds = 0;
-        let sumInBounds = 0;
-
-        if (data) {
-          data.forEach(datum => {
-            if (datum.direction === "INBOUND") {
-              sumOutBounds += datum.amount
-            } else {
-              sumInBounds += datum.amount
-            }
-          })
-
-          let ioBoundObjArr = [
-            { name: "INBOUND", value: Math.round(sumInBounds) },
-            { name: "OUTBOUND", value: Math.round(sumOutBounds) },
-          ]
+    this.interval = setInterval(() => {
+      fetch("https://skm-starlingbot.herokuapp.com/dashboard?action=getAllTransactions")
+        .then(res => res.json())
+        .then((data) => {
+          console.log("fetched", data);
 
           this.setState({
-            ioBoundObjArr,
+            transactionTableRowsList: data,
           })
-        }
-      })
 
+          let sumOutBounds = 0;
+          let sumInBounds = 0;
 
-    fetch("https://skm-starlingbot.herokuapp.com/dashboard?action=getUserInfo")
-      .then(res => res.json())
-      .then((data) => {
-        console.log("fetched USER", data);
+          if (data) {
+            data.forEach(datum => {
+              if (datum.direction === "INBOUND") {
+                sumOutBounds += datum.amount
+              } else {
+                sumInBounds += datum.amount
+              }
+            })
 
-        this.setState({
-          user: data,
+            let ioBoundObjArr = [
+              { name: "INBOUND", value: Math.round(sumInBounds) },
+              { name: "OUTBOUND", value: Math.round(sumOutBounds) },
+            ]
+
+            this.setState({
+              ioBoundObjArr,
+            })
+          }
         })
-      })
-      }, 1000);
+
+
+      fetch("https://skm-starlingbot.herokuapp.com/dashboard?action=getUserInfo")
+        .then(res => res.json())
+        .then((data) => {
+          console.log("fetched USER", data);
+
+          this.setState({
+            user: data,
+          })
+        })
+    }, 1000);
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     clearInterval(this.interval)
   }
 
