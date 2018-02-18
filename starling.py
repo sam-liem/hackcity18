@@ -1,6 +1,9 @@
-import requests
 import json
-from analytics import Analytics
+
+import requests
+
+from src.analytics import Analytics
+
 
 class account:
     def __init__ (self,token):

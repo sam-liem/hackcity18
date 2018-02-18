@@ -55,9 +55,10 @@ class Analytics(object):
 
             else:
                 self.inbounds += [self.transactions[trans]['direction']]
-
+        """
         for trans in self.transactions:
             print ("Date: ", trans['created']," type: ", trans['direction'], "amount: ", trans['amount'])
+        """
         
     def getRandomTime(self):
         fiveMinutes = 300
@@ -197,6 +198,7 @@ class Analytics(object):
             mostRecent = self.transactions[trans]
 
 
+        """
         print ("Getting inbounds accumulation: ")
         for trans in self.inbounds_cumulative:
             print ("Day: " , trans.day_num , " total: ", trans.cumulative_total)
@@ -205,6 +207,7 @@ class Analytics(object):
         print ("Getting outbounds accumulation: ")
         for trans in self.outbounds_cumulative:
             print("Day: ", trans.day_num, " total: ", trans.cumulative_total)
+        """
 
 
     def highestExpense(self, transactions):
@@ -223,5 +226,5 @@ class Analytics(object):
 
         name, spent = narrativeCostTable[0]
         speech = "You spent " + str(spent * -1) + " on " + name + ". Consider switching to cheaper alternatives."
-        print(speech)
+
 
