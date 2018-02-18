@@ -1,7 +1,6 @@
 import requests
 import json
-import datetime.datetime
-import analytics.analytics
+from analytics import Analytics
 
 class account:
     def __init__ (self,token):
