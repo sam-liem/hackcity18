@@ -99,7 +99,7 @@ class account:
         transactions = (self.getTransactions())['_embedded']['transactions']
         transactions.reverse()
         analyse = Analytics(transactions)
-        speech = analyse.analyse()
+        speech = analyse.process()
         #Remind Sam to add this action
         return {"speech":speech, "action":"analysedTransactions"}
         
