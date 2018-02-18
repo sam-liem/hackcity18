@@ -25,8 +25,8 @@ class account:
                     "reference": name
                 }
 
-        # res = httpHelper.post_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/payments/local", data)
-        res = httpHelper.post_req(self.token, "http://32325652.ngrok.io/", data)
+        res = httpHelper.post_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/payments/local", data)
+        # res = httpHelper.post_req(self.token, "http://32325652.ngrok.io/", data)
         
         return {"speech":"Transfer success","action":"transfer"}
 
