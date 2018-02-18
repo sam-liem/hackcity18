@@ -55,6 +55,7 @@ def processRequest(req):
 
     elif action == "getAllTransactions":
         data = acc.returnTransactions()
+
         
     else:
         return {}

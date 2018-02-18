@@ -19,7 +19,6 @@ class Analytics(object):
          self.outbounds_cumulative = []
          self.inbounds_cumulative = []
          self.processed = False
-    
 
     #Get a datetime object based on the first data and time noticed
     def getBaseDate (self):
@@ -80,11 +79,80 @@ class Analytics(object):
     def process (self):
         self.analyse()
 
-    def getInbounds (self, days):
-        pass
+    def interpolate (self, inbound_outbounds, day):
+        for trans in range(1,len(inbound_outbounds)):
+            prev = inbound_outbounds[trans-1]
+            curr = inbound_outbounds[trans]
 
-    def getOutbounds (self, days):
-        pass
+            if prev.day_num == day:
+                return prev.cumulative_total
+
+            if curr.day_num == day:
+                return prev.cumulative_total
+
+            if not (prev.day_num < day and day < curr.day_num):
+                continue
+
+            dayDiff = curr.day_num - prev.day_num
+            frequencyDiff = curr.cumulative_total - prev.cumulative_total
+
+            frequencyPerWidth = frequencyDiff/dayDiff
+            freqWidth = day - prev.day_num
+            return prev.cumulative_total + frequencyPerWidth*freqWidth
+
+        return None
+
+
+    def getTotalInbound (self, day):
+        return self.interpolate (self.inbounds_cumulative, day)
+
+    def getTotalOutbound (self, days):
+        return self.interpolate(self.outbounds_cumulative,day)
+
+    def getAverage (self, inbound_outbound, day_inverval):
+        #Gets average amount of money in total every day_interval days
+        currentDay = inbound_outbound[-1].day_num
+
+        avg = 0
+        count = 0
+        while currentDay >= inbound_outbound[0].day_num:
+            currentAmount = self.interpolate(inbound_outbound,currentDay)
+
+            if currentDay-day_inverval > inbound_outbound[0].day_num:
+                if day_inverval == 1:
+                    smallerAmount = self.interpolate(inbound_outbound,currentDay-day_inverval)
+                else:
+                    smallerAmount = self.interpolate(inbound_outbound,currentDay-day_inverval+1)
+
+            else:
+                if day_inverval == 1:
+                    smallerAmount = 0
+
+                else:
+                    break
+
+            avg += (currentAmount-smallerAmount)
+            count += 1
+
+            currentDay -= 1
+
+        return avg/count
+
+    def getAverageInbound (self, dayInterval):
+        return self.getAverage(self.inbounds_cumulative, dayInterval)
+
+    def getAverageOutbound (self, dayInterval):
+        return self.getAverage(self.outbounds_cumulative, dayInterval)
+
+    def getDayDifference (self, d1, d2):
+        diff = (d1 - d2).days
+
+        if diff == 0:
+            return 1
+
+        else:
+            return diff
+
     def analyse(self):
         self.alterDates()
         day = 0
@@ -97,49 +165,36 @@ class Analytics(object):
             balance = self.transactions[trans]['balance']
             currDate = self.transactions[trans]['created']
             cash_diff = self.transactions[trans]['amount']
+
             if self.transactions[trans]['direction'] == "OUTBOUND":
                 cash_diff *= -1
+                inbound_outbound = self.outbounds_cumulative
                 outboundTotal += cash_diff
-                if self.outbounds_cumulative == []:
-                    if mostRecent != None:
-                        day += (currDate - mostRecent['creative']).days
+                total = outboundTotal
 
-                    self.outbounds_cumulative += [Accumulation(day,outboundTotal,balance,currDate)]
-
-                else:
-                    prev = self.outbounds_cumulative[-1].dateRef
-
-                    if (currDate.year == prev.year and
-                        currDate.month == prev.month and
-                        currDate.day == prev.day):
-                        self.outbounds_cumulative[-1].cumulative_total = outboundTotal
-                        self.outbounds_cumulative[-1].balance = balance
-
-                    else:
-                        day += (currDate - mostRecent['created']).days
-                        self.outbounds_cumulative += [Accumulation(day,outboundTotal,balance,currDate)]
             else:
+                inbound_outbound = self.inbounds_cumulative
                 inboundTotal += cash_diff
-                if self.inbounds_cumulative == []:
-                    if mostRecent != None:
-                        day += (currDate - mostRecent['created']).days
-                        self.inbounds_cumulative += [Accumulation(day,inboundTotal,balance,currDate)]
+                total = inboundTotal
+
+            if inbound_outbound == []:
+                if mostRecent != None:
+                    dayDiff = self.getDayDifference(currDate, mostRecent['created'])
+                    day += dayDiff
+                inbound_outbound += [Accumulation(day,total,balance,currDate)]
+            else:
+                prev = inbound_outbound[-1].dateRef
+                if (currDate.year == prev.year and
+                    currDate.month == prev.month and
+                    currDate.day == prev.day):
+                    inbound_outbound[-1].cumulative_total = total
+                    inbound_outbound[-1].balance = balance
 
                 else:
-                    prev = self.inbounds_cumulative[-1].dateRef
-
-                    if (currDate.year == prev.year and
-                        currDate.month == prev.month and
-                        currDate.day == prev.day):
-                        self.inbounds_cumulative[-1].cash_difference = inboundTotal
-                        self.inbounds_cumulative[-1].balance = balance
-
-                    else:
-                        day += (currDate - mostRecent['created']).days
-                        self.inbounds_cumulative += [Accumulation(day,inboundTotal,balance,currDate)]
-
+                    dayDiff = self.getDayDifference (currDate, mostRecent['created'])
+                    day += dayDiff
+                    inbound_outbound += [Accumulation(day, total, balance, currDate)]
             mostRecent = self.transactions[trans]
-        self.processed = True
 
 
         print ("Getting inbounds accumulation: ")

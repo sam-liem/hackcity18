@@ -7,6 +7,7 @@ class account:
         self.loggin = False
         self.token = token
         self.headers = {"Accept": "application/json","Content-Type": "application/json","Authorization": "Bearer "+token}
+        self.processTransactions()
 
     # REQUEST functions
     def get_req(self, url):
@@ -65,13 +66,10 @@ class account:
 
     def getTransactions(self):
         return self.get_req("https://api-sandbox.starlingbank.com/api/v1/transactions")
-        
-   
+
     def returnTransactions(self):
         data = self.getTransactions()
         transactions = data['_embedded']['transactions']
-        speech = ""
-
         for transaction in transactions:
             total += 1
             if transaction['direction'] == "OUTBOUND":
@@ -79,8 +77,6 @@ class account:
             else:
                 msg = "Inbound transaction. Amount going in: " + str(transaction['amount']) + " balance remaining: " + str(transaction['balance']) + " Date : " + str(transaction['created']) + "\n"
             speech += msg
-
-        print("length: ", total)   
 
         return {"speech":speech, "action":"returnTransactions"}    
 
@@ -98,12 +94,47 @@ class account:
     def processTransactions(self):
         transactions = (self.getTransactions())['_embedded']['transactions']
         transactions.reverse()
-        analyse = Analytics(transactions)
-        speech = analyse.process()
-        #Remind Sam to add this action
-        return {"speech":speech, "action":"analysedTransactions"}
+        self.analysis = Analytics(transactions)
+        self.analysis.process()
+        #return {"speech":speech, "action":"analysedTransactions"}
         
-    # SAVING GOALS 
+    # SAVING GOALS
+    def getTotalInbound (self, day):
+        return self.analysis.getTotalInbound(int(day))
+
+    def returnTotalInbound (self, day):
+        total = self.analysis.getTotalInBound (day)
+        speech = "In " + day + "days " + "you received a total of: £ " + str(total)
+        return {"speech":speech, "action":"returnTotalInBound"}
+
+
+    def getTotalOutbound (self, day):
+        return self.analysis.getTotalOutbound(int(day))
+
+    def returnTotalOutbound (self, day):
+        total = self.getTotalInbound(day)
+        speech = "In " + day + "days " + "you spent a total of: £ " + str(total)
+        return {"speech": speech, "action": "returnTotalOutbound"}
+
+    def getAverageInbound (self, interval):
+        return self.analysis.getAverageInbound(interval)
+
+    def returnAverageInbound (self, interval):
+        avg = self.analysis.getAverageInbound(int(interval))
+        print("Average: ", avg)
+        speech = "Over " + str(interval) + "days, you receive an average of: "  + str(avg)
+        return {"speech":speech, "action":"returnAverageInbound"}
+
+    def returnAverageOutbound (self, interval):
+        avg = self.analysis.getAverageOutbound(int(interval))
+        print("Average: ", avg)
+        speech = "Over " + str(interval) + "days, you spend an average of: " + str(avg)
+        return {"speech":speech, "action":"returnAverageOutbound"}
+
+
+    def getAverageOutbound (self, interval):
+        return self.analysis.getTotalOutbound(interval)
+
     def getSavingGoals(self):
         data = self.get_req("https://api-sandbox.starlingbank.com/api/v1/savings-goals")
         return data
