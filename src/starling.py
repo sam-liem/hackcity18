@@ -115,22 +115,23 @@ class account:
         data = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/savings-goals")
         return data
 
-    def addSavingsGoal(self, data):
+    def addSavingsGoal(self, goalName, goalAmount):
         # handle data after dialogflow is setup
         # TODO
         data = {
-                  "name": "Trip to Paris",
+                  "name": goalName,
                   "currency": "GBP",
                   "target": {
                     "currency": "GBP",
-                    "minorUnits": 11223344
+                    "minorUnits": goalAmount
                   },
                   "totalSaved": {
                     "currency": "GBP",
-                    "minorUnits": 2
+                    "minorUnits": 0
                   },
-                  "savedPercentage": 50
+                  "savedPercentage": 0
                 }
+                
         httpHelper.put_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/savings-goals/b43d3060-2c83-4bb9-ac8c-c627b9c45f8b", data)
         speech = "You added a new savings goal: "+data['name'] + " for " + str(data['target']['minorUnits'])
         return {"speech": speech, "action":"addSavingGoal"}
