@@ -8,6 +8,13 @@ class account:
         self.loggin = False
         self.token = token
 
+    # userInfo 
+    def getUserInfo(self):
+        accountData = self.getAccountData()
+        cardData = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/me")
+
+        return data
+
     # BALANCE
     def returnBalance(self):
         data = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/accounts/balance")
@@ -75,10 +82,10 @@ class account:
         return speech
 
     # SAVING GOALS 
-    def returnAllSavingGoals(self):
+    def returnAllSavingsGoals(self):
         return self.returnSavingGoals(self.getAllSavingGoals())
 
-    def returnSavingGoals(self, data):
+    def returnSavingsGoals(self, data):
         savingGoals = data
         if savingGoals == {}:
             return {}
@@ -101,11 +108,11 @@ class account:
 
         return {"speech":speech, "action":"returnSavingGoals"}
 
-    def getAllSavingGoals(self):
+    def getAllSavingsGoals(self):
         data = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/savings-goals")
         return data
 
-    def addSavingGoal(self, data):
+    def addSavingsGoal(self, data):
         # handle data after dialogflow is setup
         # TODO
         data = {
@@ -125,7 +132,7 @@ class account:
         speech = "You added a new savings goal: "+data['name'] + " for " + str(data['target']['minorUnits'])
         return {"speech": speech, "action":"addSavingGoal"}
 
-    def deleteSavingGoal(self, goalName):
+    def deleteSavingsGoal(self, goalName):
         savingGoals = self.getAllSavingGoals()
         if savingGoals == {}:
             return {"speech": "You have no saving goals!", "action":"deleteSavingGoal"}
@@ -141,7 +148,7 @@ class account:
 
         return {}
 
-    def returnSavingGoal(self, goalName):
+    def returnSavingsGoal(self, goalName):
         savingGoals = self.getAllSavingGoals()
         if savingGoals == {}:
             return {"speech": "You have no saving goals!", "action":"getSavingGoal"}

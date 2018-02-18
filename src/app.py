@@ -15,15 +15,40 @@ from flask import send_from_directory
 # Flask app should start in global layout
 app = Flask(__name__)
 
-@app.route('/dialogFlow', methods=['POST'])
+@app.route('/dashboard')
+def dashboard():
 
+    action = request.args.get('action')
+
+    res = dashboard_processRequest(action)
+    res = json.dumps(res, indent=4)
+    
+    print("Response sent:")
+    print(res)
+
+    r = make_response(res)
+    r.headers['Content-Type'] = 'application/json'
+    return r
+
+def dashboard_processRequest(action):
+
+    acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
+
+    if action == "getAllTransactions":
+        return acc.getAllTransactions()
+
+    if action == "getUserInfo":
+        return acc.getUserInfo()
+
+
+@app.route('/dialogFlow', methods=['POST'])
 def dialogFlow():
     req = request.get_json(silent=True, force=True)
 
     print("Request received:")
     print(json.dumps(req, indent=4))
 
-    res = processRequest(req)
+    res = dialogFlow_processRequest(req)
 
     res = json.dumps(res, indent=4)
     
@@ -34,8 +59,7 @@ def dialogFlow():
     r.headers['Content-Type'] = 'application/json'
     return r
 
-
-def processRequest(req):
+def dialogFlow_processRequest(req):
 
     acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
 
@@ -58,20 +82,18 @@ def processRequest(req):
         data = acc.returnAllTransactions()
     
     elif action == "addSavingsGoal":
-        data = acc.addSavingGoal(req)
+        data = acc.addSavingsGoal(req)
 
-    elif action == "getAllSavingGoals":
-        data = acc.returnAllSavingGoals()
+    elif action == "getAllSavingsGoals":
+        data = acc.returnAllSavingsGoals()
 
-    elif action == "deleteSavingGoal":
-        # temp
-        req['goalName'] = "Trip to Paris"
-        data = acc.deleteSavingGoal(req['goalName'])
+    elif action == "deleteSavingsGoal":
+        goalName = req.get("result").get("parameters").get("goalName")
+        data = acc.deleteSavingsGoal(goalName)
 
     elif action == "getSavingsGoal":
-        # temp
-        req['goalName'] = "Trip to Paris"
-        data = acc.returnSavingGoal(req['goalName'])
+        goalName = req.get("result").get("parameters").get("goalName")
+        data = acc.returnSavingsGoal(goalName)
 
     elif action == "getAllPaymentSchedules":
         data = acc.returnAllPaymentSchedules()
@@ -83,9 +105,9 @@ def processRequest(req):
     else:
         return {}
 
-    return makeDialogFlowWebhookResult(data)
+    return dialogFlow_makeWebhookResult(data)
 
-def makeDialogFlowWebhookResult(data):
+def dialogFlow_makeWebhookResult(data):
 
     if data == {}:
         return {}
