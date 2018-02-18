@@ -1,0 +1,53 @@
+<head>
+  <title>StarlingBot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+</head>
+<!-- Chat Page -->
+<body>
+  <img class="logo" src='favicon.ico' align="left">
+  <h1 class="title">StarlingBot.</h1>
+
+  <div id="messages"></div>
+
+
+  <div>
+    <textarea id="messageContent"></textarea>
+      <div>
+        <div><a href="#" id="sendMessageButton">Send</a></div>
+      </div>
+  </div>
+
+
+  <script>
+  $( document ).ready(function() {
+    $( "#sendMessageButton").click(function() {
+      var accessToken = "9e75ac7ab0a74889a00db465826fcf42";
+      var baseUrl = "https://api.dialogflow.com/v1/";
+
+      var q = $( "#messageContent" ).val();
+
+      $("#messages").append("<p>"+q+"</p>");
+
+      $.ajax({
+        type: "GET",
+        url: baseUrl + "query?v=20150910&lang=en&sessionId=12345&query="+q,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        headers: {
+            "Authorization": "Bearer " + accessToken
+        },
+        success: function (data) {
+          var resText = data['result']['fulfillment']['speech'];
+          $("#messages").append("<p>"+resText+"</p>");
+        },
+        error: function () {
+          setResponse("Internal Server Error");
+        }
+      });
+    })
+  });
+  </script>
+</body>
