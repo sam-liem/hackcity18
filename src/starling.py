@@ -237,7 +237,7 @@ class account:
 
     def returnTotalOutbound(self, day):
         total = self.getTotalOutbound(day)
-        speech = "In " + day + " days " + "you spent a total of: £ " + str(float("{0:.2f}".format(total)))
+        speech = "In " + day + " days " + "you spent a total of: £" + str(float("{0:.2f}".format(total)))
         return {"speech": speech, "action": "returnTotalOutbound"}
 
     def getAverageInbound(self, interval):
