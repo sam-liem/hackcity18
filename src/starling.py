@@ -131,9 +131,9 @@ class account:
                   },
                   "savedPercentage": 0
                 }
-                
+
         httpHelper.put_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/savings-goals/b43d3060-2c83-4bb9-ac8c-c627b9c45f8b", data)
-        speech = "You added a new savings goal: "+data['name'] + " for " + str(data['target']['minorUnits'])
+        speech = "You added a new savings goal: "+data['name'] + " for £" + str(data['target']['minorUnits']) + "!"
         return {"speech": speech, "action":"addSavingGoal"}
 
     def deleteSavingsGoal(self, goalName):
