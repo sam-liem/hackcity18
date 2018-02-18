@@ -15,9 +15,9 @@ from flask import send_from_directory
 # Flask app should start in global layout
 app = Flask(__name__)
 
-@app.route('/webhook', methods=['POST'])
+@app.route('/dialogFlow', methods=['POST'])
 
-def webhook():
+def dialogFlow():
     req = request.get_json(silent=True, force=True)
 
     print("Request received:")
@@ -83,9 +83,9 @@ def processRequest(req):
     else:
         return {}
 
-    return makeWebhookResult(data)
+    return makeDialogFlowWebhookResult(data)
 
-def makeWebhookResult(data):
+def makeDialogFlowWebhookResult(data):
 
     if data == {}:
         return {}
