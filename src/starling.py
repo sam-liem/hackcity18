@@ -9,15 +9,21 @@ class account:
         self.token = token
 
     # TRANSER
-    def transfer(self, dest, a, name ):
+    def transfer(self, recipientName, a, name ):
+        dest = self.getContactFromName(recipientName)
+        if (dest == {}):
+            return {"speech":"Transfer failed, no account in your contacts with that name","action":"transfer"}
+        destId = dest['id']
+
         data = {
                     "payment": {
                     "currency": "GBP",
                         "amount": a
                     },
-                    "destinationAccountUid": dest,
+                    "destinationAccountUid": destId,
                     "reference": name
                 }
+
         res = httpHelper.post_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/payments/local", data)
         speech = ""
         if res == {}:
@@ -26,6 +32,7 @@ class account:
             speech = "Transfer success"
 
         return {"speech":speech,"action":"transfer"}
+
 
     # userInfo 
     def getUserInfo(self):
@@ -36,6 +43,18 @@ class account:
         balance = balance['effectiveBalance']
 
         return {"accountData":accountData, "cardData":cardData, "addressData":addressData, "balance": balance}
+
+    # CONTACTS
+    def getContacts(self):
+        contacts = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/contacts")
+        return contacts['_embedded']['contacts']
+
+    def getContactFromName(self, name):
+        contacts = self.getContacts()
+        for contact in contacts:
+            if (contact['name'] == name):
+                return contact
+        return {}
 
     # BALANCE
     def returnBalance(self):
@@ -189,3 +208,6 @@ class account:
     def setSpreadsheet(self):
         transactions = self.getAllTransactions()
         to_csv = csvHelper.to_csv(transactions)
+
+acc = account("1rxRXmg4lNh5rphevZwWNG1CYbTwRC9juFJe3ZGEenYo1wuStaXh2UZgMpNs9Pta")
+acc.getContactFromName("Heywood Floyd")

@@ -108,7 +108,7 @@ def dialogFlow_processRequest(req):
         data = {"speech":url}
 
     elif action == "transfer":
-        # data = acc.transfer("7f03a23a-bafc-4479-8d4d-abb6a9119d27",100,"dinner")
+        # data = acc.transfer("Dave broMAN",100,"dinner")
         # can't get good uuid in sandbox
         data = {"speech":"Transfer successful."}
     else:
