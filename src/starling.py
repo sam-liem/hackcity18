@@ -207,10 +207,10 @@ class account:
 
     # ANALYTIC
     def getAllAnalyticsData(self):
-        totalInbound = self.getTotalInbound()
-        totalOutbound = self.getTotalOutbound()
-        averageInbound = self.getAverageInbound()
-        averageOutbound = self.getAverageOutbound()
+        totalInbound = self.getTotalInbound(30)
+        totalOutbound = self.getTotalOutbound(30)
+        averageInbound = self.getAverageInbound(30)
+        averageOutbound = self.getAverageOutbound(30)
         allInbound = self.getAllInbounds()
         allOutbound = self.getAllOutbounds()
 
@@ -236,7 +236,7 @@ class account:
         return self.analysis.getTotalOutbound(int(day))
 
     def returnTotalOutbound(self, day):
-        total = self.getTotalInbound(day)
+        total = self.getTotalOutbound(day)
         speech = "In " + day + "days " + "you spent a total of: £ " + str(total)
         return {"speech": speech, "action": "returnTotalOutbound"}
 
