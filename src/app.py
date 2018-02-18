@@ -108,7 +108,10 @@ def dialogFlow_processRequest(req):
         data = {"speech":url}
 
     elif action == "transfer":
-        # data = acc.transfer("Dave broMAN",100,"dinner")
+        contactName = req.get("result").get("parameters").get("contactName")
+        transactionAmount = req.get("result").get("parameters").get("transactionAmount")
+        transactionReference = req.get("result").get("parameters").get("transactionReference")
+        # data = acc.transfer(contactName,transactionAmount,transactionReference)
         # can't get good uuid in sandbox
         data = {"speech":"Transfer successful."}
     else:
