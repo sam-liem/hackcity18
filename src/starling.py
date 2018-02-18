@@ -12,8 +12,11 @@ class account:
     def getUserInfo(self):
         accountData = self.getAccountData()
         cardData = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/me")
+        addressData = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/addresses")
+        balance = httpHelper.get_req(self.token, "https://api-sandbox.starlingbank.com/api/v1/accounts/balance")
+        balance = balance['effectiveBalance']
 
-        return data
+        return {"accountData":accountData, "cardData":cardData, "addressData":addressData, "balance": balance}
 
     # BALANCE
     def returnBalance(self):
